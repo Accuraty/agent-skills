@@ -37,3 +37,20 @@ Each skill's `scripts/` folder holds its tools. A project may keep a copy (for e
 2. List the plugin in `.claude-plugin/marketplace.json`.
 3. Keep it project-neutral: project-specific details (ports, sign-in, data) belong in each project's own docs, which the skill tells the agent to read.
 4. Bump the plugin's `version` in both JSON files when its behavior changes.
+
+---
+
+## Testing vs. Playwrite
+
+WebView2 starts faster and uses less memory than Playwright, and it took the same clipped shot with no full-page screenshot. I ran each tool three times against the sign-in form on port 7399, after one untimed run to build each tool:
+
+| Each run, after the first | WebView2 | Playwright + Chrome |
+| --- | --- | --- |
+| Total time per shot (wall clock) | **0.93–1.05 s** | 1.47–1.55 s |
+| Browser ready | 0.34–0.38 s | 0.56–0.57 s |
+| Shot written | 0.55–0.58 s | 1.00–1.03 s |
+| Browser processes | 6 | 9 (Chrome plus a Node.js driver) |
+| Their memory | ~345 MB | ~570 MB |
+| The tool's own memory | 58 MB | 45 MB |
+
+The memory figures add up each process's working set. Shared pages get counted more than once, so treat them as a comparison rather than exact totals. Either way, WebView2 uses about 40% less memory and is about 35% faster per shot.
