@@ -4,7 +4,7 @@
 #:property PublishAot=false
 #:property MSBuildWarningsAsMessages=MSB3277
 
-// wv2-shot 0.1.0: a screen clip of one part of a web page, for PR descriptions.
+// wv2-shot 0.1.2: a screen clip of one part of a web page, for PR descriptions.
 // Master copy: https://github.com/Accuraty/agent-skills (plugins/pr-screen-clips); projects may keep a copy, updated from there.
 // Drives Edge WebView2 in an off-screen window and captures only the chosen element plus a margin
 // (DevTools Page.captureScreenshot with a clip), so no full-page shot is taken.
@@ -81,19 +81,21 @@ var ui = new Thread(() =>
                 }
                 finally { web.NavigationCompleted -= Completed; }
             }
+            // The element's box in viewport coordinates (for the mouse), then the page scroll (the clip is in page coordinates).
             async Task<double[]?> Rect(string css) => JsonSerializer.Deserialize<double[]?>(await web.ExecuteScriptAsync(
-                $"(() => {{ const e = document.querySelector({JsonSerializer.Serialize(css)}); if (!e) return null; e.scrollIntoView({{ block: 'nearest' }}); const r = e.getBoundingClientRect(); return [r.x, r.y, r.width, r.height]; }})()"));
+                $"(() => {{ const e = document.querySelector({JsonSerializer.Serialize(css)}); if (!e) return null; e.scrollIntoView({{ block: 'nearest' }}); const r = e.getBoundingClientRect(); return [r.x, r.y, r.width, r.height, window.scrollX, window.scrollY]; }})()"));
 
             if (login.Path is not null)
             {
                 await Navigated(() => { web.Navigate(new Uri(url, login.Path).ToString()); return Task.CompletedTask; });
-                var signInPage = web.Source;
+                var signInPath = new Uri(web.Source).AbsolutePath;
                 await web.ExecuteScriptAsync(
                     $"(() => {{ const i = document.querySelector({JsonSerializer.Serialize(login.Input)}); i.value = {JsonSerializer.Serialize(login.Value)}; i.form.requestSubmit(); }})()");
-                // The form may post normally or through script, so wait for the address to leave the sign-in page.
-                for (var tries = 0; web.Source == signInPage; tries++)
+                // The form may post normally or through script, so wait for the address to leave the sign-in page's path;
+                // a rejected value usually comes back to the same path with a different query string.
+                for (var tries = 0; new Uri(web.Source).AbsolutePath.Equals(signInPath, StringComparison.OrdinalIgnoreCase); tries++)
                 {
-                    if (tries == 150) throw new TimeoutException($"still on {signInPage} after signing in: is the code right and unused?");
+                    if (tries == 150) throw new TimeoutException($"still on {web.Source} after signing in: is the value right (and unused, for a one-time code)?");
                     await Task.Delay(100);
                 }
                 await Task.Delay(wait);
@@ -117,7 +119,7 @@ var ui = new Thread(() =>
             var area = await Rect(selector) ?? throw new InvalidOperationException($"{selector}: not on {web.Source} (signed out, or a different page?)");
             var clip = new
             {
-                x = Math.Max(0, area[0] - margin), y = Math.Max(0, area[1] - margin),
+                x = Math.Max(0, area[0] + area[4] - margin), y = Math.Max(0, area[1] + area[5] - margin),
                 width = Math.Min(area[2] + 2 * margin, size[0]), height = area[3] + 2 * margin, scale = 1,
             };
             var shot = await web.CallDevToolsProtocolMethodAsync("Page.captureScreenshot",
