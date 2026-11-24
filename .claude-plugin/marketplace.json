@@ -1,0 +1,17 @@
+{
+  "name": "accuraty-agent-skills",
+  "owner": {
+    "name": "Accuraty"
+  },
+  "metadata": {
+    "description": "Agent skills and small tools Accuraty reuses across projects."
+  },
+  "plugins": [
+    {
+      "name": "pr-screen-clips",
+      "source": "./plugins/pr-screen-clips",
+      "description": "Before and after screen clips of just the changed part of a web page, uploaded to a GitHub PR with gh --attach.",
+      "version": "0.1.0"
+    }
+  ]
+}
