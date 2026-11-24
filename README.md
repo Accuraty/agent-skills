@@ -15,7 +15,17 @@ Update later with `/plugin marketplace update accuraty-agent-skills`.
 
 | Plugin | What it does |
 | --- | --- |
-| [pr-screen-clips](plugins/pr-screen-clips/skills/pr-screen-clips/SKILL.md) | Before and after screen clips of just the changed part of a web page, taken with `wv2-shot` (a .NET 10 file-based app driving Edge WebView2) and uploaded into the PR body with `gh pr edit --attach`. Windows only. |
+| [pr-screen-clips](plugins/pr-screen-clips/skills/pr-screen-clips/SKILL.md) | **Windows only.** Before and after screen clips of just the changed part of a web page, taken with `wv2-shot` (a .NET 10 file-based app driving Edge WebView2) and uploaded into the PR body with `gh pr edit --attach`. |
+
+### pr-screen-clips requirements
+
+`wv2-shot.cs` is written for **Microsoft Edge WebView2**, so it **runs only on Windows**: it targets `net10.0-windows` and opens a Windows Forms window (off-screen) to host the browser.
+
+- Windows 10 or 11 with the WebView2 Runtime (built into Windows 11 and current Windows 10).
+- The .NET 10 SDK (`dotnet wv2-shot.cs` runs it as a file-based app).
+- GitHub CLI 2.99+ for `gh pr edit --attach`.
+
+On macOS or Linux the skill's steps still apply, but the clips need another tool with an element or clip screenshot, such as Playwright or shot-scraper.
 
 ## Using a tool without the plugin
 

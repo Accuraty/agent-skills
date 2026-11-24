@@ -7,7 +7,9 @@
 // wv2-shot 0.1.0: a screen clip of one part of a web page, for PR descriptions.
 // Master copy: https://github.com/Accuraty/agent-skills (plugins/pr-screen-clips); projects may keep a copy, updated from there.
 // Drives Edge WebView2 in an off-screen window and captures only the chosen element plus a margin
-// (DevTools Page.captureScreenshot with a clip), so no full-page shot is taken. Windows only; nothing to install beyond .NET 10.
+// (DevTools Page.captureScreenshot with a clip), so no full-page shot is taken.
+// WINDOWS ONLY: written for Microsoft Edge WebView2, hosted in a Windows Forms window (net10.0-windows). Needs the .NET 10 SDK
+// and the WebView2 Runtime (built into Windows 11 and current Windows 10); nothing else to install.
 // Run it with no arguments for the usage line (dotnet run keeps --help for itself).
 //
 //   dotnet wv2-shot.cs <url> <css selector> <out.png> [options]

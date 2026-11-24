@@ -10,8 +10,8 @@
     {
       "name": "pr-screen-clips",
       "source": "./plugins/pr-screen-clips",
-      "description": "Before and after screen clips of just the changed part of a web page, uploaded to a GitHub PR with gh --attach.",
-      "version": "0.1.0"
+      "description": "Windows only: before and after screen clips of just the changed part of a web page (Edge WebView2), uploaded to a GitHub PR with gh --attach.",
+      "version": "0.1.1"
     }
   ]
 }

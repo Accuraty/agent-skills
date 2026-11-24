@@ -7,7 +7,9 @@ description: Screen clips for pull requests: before and after images of just the
 
 A **clip** is an image of one element of a page (a heading row, a card, a form, a tooltip) plus a small margin, never the whole page unless the page layout itself changed. Clips are taken with `wv2-shot` and uploaded with `gh pr edit --attach`, so no image is ever committed to git.
 
-`wv2-shot` is a .NET 10 file-based app: `scripts/wv2-shot.cs` in this skill's folder. If the project keeps its own copy (such as `tools/screenshots/wv2-shot.cs`), use the project's copy. Needs Windows (Edge WebView2), the .NET 10 SDK, and GitHub CLI 2.99+.
+`wv2-shot` is a .NET 10 file-based app: `scripts/wv2-shot.cs` in this skill's folder. If the project keeps its own copy (such as `tools/screenshots/wv2-shot.cs`), use the project's copy.
+
+**Windows only:** `wv2-shot` is written for Microsoft Edge WebView2 and hosts it in a Windows Forms window (`net10.0-windows`). It needs Windows with the WebView2 Runtime, the .NET 10 SDK, and GitHub CLI 2.99+. On macOS or Linux, follow the same steps but take the clips with another tool that captures one element (Playwright's element screenshot, or shot-scraper `-s`).
 
 ## Steps
 
